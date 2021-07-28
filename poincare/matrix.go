@@ -1,6 +1,23 @@
 package poincare
 
+import (
+	"math"
+)
+
 type Matrix [][]complex128
+
+func Inverse(m Matrix) Matrix {
+	n := make([][]complex128, 2)
+	for i := 0 ; i < 2 ; i ++ {
+		n[i] = make([]complex128, 2)
+	}
+	det := m[0][0]*m[1][1] - m[1][0]*m[0][1]
+	n[0][0] = m[1][1] / det
+	n[0][1] = -m[0][1] / det
+	n[1][0] = -m[1][0] / det
+	n[1][1] = m[0][0] / det
+	return n
+}
 
 func D2H() Matrix {
 	m := make([][]complex128, 2)
@@ -45,7 +62,18 @@ func MatMul(m1, m2 Matrix) Matrix {
 	return m
 }
 
-func Mobius(m Matrix, z complex128) complex128 {
+func Rotation(t float64) Matrix {
+	m := make([][]complex128, 2)
+	for i := 0 ; i < 2 ; i ++ {
+		m[i] = make([]complex128, 2)
+	}
+	m[0][0] = complex(math.Cos(t),0)
+	m[0][1] = complex(math.Sin(t),0)
+	m[1][0] = complex(-math.Sin(t),0)
+	m[1][1] = complex(math.Cos(t), 0)
+	return m
+}
 
-	return 0
+func Mobius(m Matrix, z complex128) complex128 {
+	return (m[0][0]*z + m[0][1]) / (m[1][0]*z + m[1][1])
 }
